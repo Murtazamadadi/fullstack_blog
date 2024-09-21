@@ -1,10 +1,19 @@
+import {BrowserRouter,Routes,Route} from "react-router-dom"
+
+import Home from "./pages/Home"
+import Header from "./components/Header"
 
 
 function App() {
 
 
   return (
-   <h1 className='bg-red-300'>hello</h1>
+   <BrowserRouter>
+   <Header/>
+   <Routes>
+    <Route path="/" element={<Home/>}/>
+   </Routes>
+   </BrowserRouter>
   )
 }
 
