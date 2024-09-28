@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn"
 import SignUp from "./pages/SignUp"
 import About from "./pages/About"
 import Projects from "./pages/Projects"
+import FooterCom from "./components/Footer"
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
     <Route path="/about" element={<About/>}/>
     <Route path="/project" element={<Projects/>}/>
    </Routes>
+   <FooterCom/>
    </BrowserRouter>
   )
 }
