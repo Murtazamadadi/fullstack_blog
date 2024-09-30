@@ -2,19 +2,24 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+import { useDispatch} from 'react-redux';
 
 export default function SignUp() {
 
   const [errorMessage,setErrorMessage]=useState("")
   const [loading,setLoading]=useState(false)
 
+  // ====================================================== Redux variable
+  const dispatch=useDispatch()
+
   const navigate=useNavigate()
   const handleSubmit=async(e)=>{
     e.preventDefault()
 
-    setLoading(true)
-    setErrorMessage("")
-
+    // setLoading(true)
+    // setErrorMessage("")
+    dispatch(signInStart())
     const formData=new FormData(e.target)
     const inputs=Object.fromEntries(formData.entries())
   
@@ -34,10 +39,12 @@ export default function SignUp() {
       }
 
       if(res.ok){
+        dispatch(signInSuccess(data))
         navigate("/")
       }
     }catch(err){
       setErrorMessage(err.message)
+      dispatch(signInFailure(err.message))
     }finally{
       // setErrorMessage("")
       setLoading(false)
