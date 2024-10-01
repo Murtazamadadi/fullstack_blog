@@ -1,13 +1,36 @@
-import { Button, Navbar, TextInput } from 'flowbite-react';
+import { Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, TextInput } from 'flowbite-react';
 import { Link, useLocation} from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutSuccess } from '../redux/user/userSlice';
 
 
 export default function Header() {
   const path = useLocation().pathname;
  
+// ================================================= use Redux veriable
+const {currentUser}=useSelector(state=>state.user)
 
+// ================================================= use Redux selector
+const dispatch=useDispatch()
+
+  const handleLogout=async()=>{
+    try{
+      const res=await fetch("/api/v1/auth/logout",{
+        method:"POST"
+      })
+
+      const data=await res.json()
+      if(!res.ok){
+        console.log(data.message)
+      }else{
+        dispatch(logoutSuccess(res.data))
+      }
+    }catch(err){
+      console.log(err.message)
+    }
+  }
  
   return (
     <Navbar className='border-b-2'>
@@ -39,11 +62,39 @@ export default function Header() {
         >
           <FaMoon/>
         </Button>
-          <Link to='/login'>
-            <Button gradientDuoTone='purpleToBlue' outline>
-              ورود
-            </Button>
-          </Link>
+        {
+          currentUser? (
+            <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+              alt='user' img={currentUser?.profilePicture}
+              rounded
+              />
+            }
+            >
+            <DropdownHeader>
+              <span className='block text-sm'>@{currentUser?.username}</span>
+              <span className='block text-sm font-medium truncate'>@{currentUser?.email}</span>
+            </DropdownHeader>
+            <Link to={"/dashboard/tab=profile"}>
+            <DropdownItem>پروفایل</DropdownItem>
+            </Link>
+            <DropdownDivider/>
+            <DropdownItem onClick={handleLogout}>
+              LogOut
+            </DropdownItem>
+            </Dropdown>
+          ):(
+            <Link to='/login'>
+              <Button gradientDuoTone='purpleToBlue' outline>
+                ورود
+              </Button>
+            </Link>
+
+          )
+        }
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
